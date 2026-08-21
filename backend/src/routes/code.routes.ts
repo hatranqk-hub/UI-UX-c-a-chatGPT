@@ -1,20 +1,11 @@
 import express, { Router } from 'express';
+import * as codeController from '../controllers/codeController.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router: Router = express.Router();
 
-// POST /api/code/complete
-router.post('/complete', (req, res) => {
-  res.json({ message: 'Code completion' });
-});
-
-// POST /api/code/explain
-router.post('/explain', (req, res) => {
-  res.json({ message: 'Explain code' });
-});
-
-// POST /api/code/refactor
-router.post('/refactor', (req, res) => {
-  res.json({ message: 'Refactor code' });
-});
+router.post('/complete', authMiddleware, codeController.getCodeCompletion);
+router.post('/explain', authMiddleware, codeController.explainCodeSnippet);
+router.post('/refactor', authMiddleware, codeController.refactorCodeSnippet);
 
 export default router;

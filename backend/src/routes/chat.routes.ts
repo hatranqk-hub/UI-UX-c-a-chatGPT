@@ -1,25 +1,12 @@
 import express, { Router } from 'express';
+import * as chatController from '../controllers/chatController.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router: Router = express.Router();
 
-// POST /api/chat/message
-router.post('/message', (req, res) => {
-  res.json({ message: 'Send chat message' });
-});
-
-// GET /api/chat/history/:chatId
-router.get('/history/:chatId', (req, res) => {
-  res.json({ message: 'Get chat history' });
-});
-
-// GET /api/chat/conversations
-router.get('/conversations', (req, res) => {
-  res.json({ message: 'Get all conversations' });
-});
-
-// DELETE /api/chat/:chatId
-router.delete('/:chatId', (req, res) => {
-  res.json({ message: 'Delete conversation' });
-});
+router.post('/message', authMiddleware, chatController.sendMessage);
+router.get('/conversations', authMiddleware, chatController.getConversations);
+router.get('/history/:chatId', authMiddleware, chatController.getConversationHistory);
+router.delete('/:chatId', authMiddleware, chatController.deleteConversation);
 
 export default router;
