@@ -1,16 +1,42 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import useStore from './store/useStore';
+import { AuthPage } from './pages/Auth';
+import { ChatPage } from './pages/Chat';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import './App.css';
 
 function App() {
+  const { loadCurrentUser } = useStore();
+
+  useEffect(() => {
+    loadCurrentUser();
+  }, []);
+
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<div>Welcome to AI Chat App</div>} />
-        <Route path="/chat" element={<div>Chat Page</div>} />
-        <Route path="/auth" element={<div>Auth Page</div>} />
+        {/* Auth Routes */}
+        <Route path="/auth/*" element={<AuthPage />} />
+        <Route path="/auth/login" element={<AuthPage />} />
+        <Route path="/auth/register" element={<AuthPage />} />
+
+        {/* Protected Routes */}
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Redirects */}
+        <Route path="/" element={<Navigate to="/chat" />} />
+        <Route path="*" element={<Navigate to="/chat" />} />
       </Routes>
-    </BrowserRouter>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
